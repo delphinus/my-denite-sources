@@ -15,7 +15,7 @@ def abbr(vim, x):
     x = x.replace('~/.go/src', '$GO')
     icon = vim.funcs.WebDevIconsGetFileTypeSymbol(
         x, os.path.isdir(x))
-    icon = ' {0} '.format(icon)
+    icon = ' {0}  '.format(icon)
     directory = vim.funcs.fnamemodify(x, ':.:h') + '/'
     filename = vim.funcs.fnamemodify(x, ':t')
     return icon + ICON_SEP + directory + FILE_SEP + filename
