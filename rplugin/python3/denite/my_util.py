@@ -1,8 +1,5 @@
 import os.path
 
-ICON_SEP = '{0}_i_{0}'.format(chr(0xa0))
-FILE_SEP = '{0}_f_{0}'.format(chr(0xa0))
-SEP_RE = '{0}_._{0}'.format(chr(0xa0))
 NO_NAME = 'NoName'
 
 
@@ -40,8 +37,6 @@ def highlight(vim, syntax_name):
         format(name('Time'), syntax_name))
     com(r'syntax match {0} /\$[A-Z]\+/ contained containedin={1}'.
         format(name('Special'), syntax_name))
-    com('syntax match {0} /{1}/ conceal contained containedin={2}'.
-        format(name('Sep'), SEP_RE, syntax_name))
 
     com('highlight default link {0} Constant'.format(name('Prefix')))
     com('highlight default link {0} String'.format(name('Icon')))
