@@ -8,7 +8,7 @@ import sys
 from os.path import dirname
 sys.path.append(dirname(dirname(__file__)))
 
-from my_util import abbr, highlight
+from my_util import NO_NAME, abbr, highlight
 from time import localtime, strftime
 from denite.source.buffer import Source as Base
 
@@ -22,7 +22,7 @@ class Source(Base):
 
     def _convert(self, buffer_attr, rjust):
         if buffer_attr['name'] == '':
-            name = 'No Name'
+            name = NO_NAME
             path = ''
         else:
             name = self.vim.call('fnamemodify', buffer_attr['name'], ':~:.')
@@ -49,5 +49,4 @@ class Source(Base):
         }
 
     def highlight(self):
-        super().highlight()
         highlight(self.vim, self.syntax_name)
