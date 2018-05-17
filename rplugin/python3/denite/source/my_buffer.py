@@ -8,7 +8,7 @@ import sys
 from os.path import dirname
 sys.path.append(dirname(dirname(__file__)))
 
-from my_util import NO_NAME, abbr, highlight
+from my_util import NO_NAME, abbr, add_icon, highlight
 from time import localtime, strftime
 from denite.source.buffer import Source as Base
 
@@ -31,7 +31,7 @@ class Source(Base):
         return {
             'bufnr': buffer_attr['number'],
             'word': name,
-            'abbr': '{0}{1} {2}{3} {4}'.format(
+            'abbr': add_icon(self.vim, '{0}{1} {2}{3} {4}'.format(
                 str(buffer_attr['number']).rjust(rjust, ' '),
                 buffer_attr['status'],
                 abbr_name,
@@ -42,7 +42,7 @@ class Source(Base):
                     '(' + self.vars['date_format'] + ')',
                     localtime(buffer_attr['timestamp'])
                     ) if self.vars['date_format'] != '' else ''
-            ),
+            ), name),
             'action__bufnr': buffer_attr['number'],
             'action__path': path,
             'timestamp': buffer_attr['timestamp']

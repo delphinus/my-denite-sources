@@ -8,7 +8,7 @@ import sys
 from os.path import dirname
 sys.path.append(dirname(dirname(__file__)))
 
-from my_util import word, abbr, highlight
+from my_util import abbr, add_icon, highlight, word
 from denite.source.file_mru import Source as Base
 
 
@@ -21,7 +21,7 @@ class Source(Base):
     def gather_candidates(self, context):
         return [{
             'word': word(self.vim, x),
-            'abbr': abbr(self.vim, x),
+            'abbr': add_icon(self.vim, abbr(self.vim, x), x),
             'action__path': x,
         } for x in self.vim.eval(
             'neomru#_get_mrus().file.'
