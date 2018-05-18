@@ -2,7 +2,6 @@ import os.path
 
 NO_NAME = 'NoName'
 
-
 def word(vim, x):
     return vim.funcs.fnamemodify(x, ':~:.')
 
@@ -15,9 +14,12 @@ def abbr(vim, x):
     return x
 
 
-def add_icon(vim, x, path):
-    icon = vim.funcs.WebDevIconsGetFileTypeSymbol(path, os.path.isdir(path))
-    return ' {0}  {1}'.format(icon, x)
+def icon(vim, path):
+    return vim.funcs.WebDevIconsGetFileTypeSymbol(path, os.path.isdir(path))
+
+
+def icon_abbr(vim, x):
+    return ' {0}  {1}'.format(icon(vim, x), abbr(vim, x))
 
 
 def highlight(vim, syntax_name):
