@@ -1,6 +1,17 @@
 import os.path
 
 NO_NAME = 'NoName'
+HIGHLIGHT_SYNTAX = [
+    {'name': 'Prefix', 'link': 'Constant', 're': r'\v\d+\s[\ ahu%#+]+'},
+    {'name': 'Info', 'link': 'PreProc', 're': r'\v\[[^]]*\]'},
+    {'name': 'Modified', 'link': 'Statement', 're': '+', 'in': 'Prefix'},
+    {'name': 'Time', 'link': 'Statement', 're': r'\v\([^)]*\)'},
+    {'name': 'File', 'link': 'Function', 're': r'\v[^/ [\]]+\ze\s(\[|\()'},
+    {'name': 'File', 'link': 'Function', 're': r'\v[^/ [\]]+\ze\n'},
+    {'name': 'Special', 'link': 'WildMenu', 're': r'\v\$[A-Z]+'},
+    {'name': 'Icon', 'link': 'String', 're': r'\].\['},
+    {'name': 'IconConceal', 'is_conceal': True, 'in': 'Icon', 're': r'[[\]]'},
+]
 
 def word(vim, x):
     return vim.funcs.fnamemodify(x, ':~:.')
@@ -24,29 +35,13 @@ def icon_abbr(vim, x):
 
 
 def highlight(vim, syntax_name):
-    def name(x):
-        return syntax_name + '_' + x
-
-    com = vim.command
-    com(r'syntax match {0} /\v\d+\s[\ ahu%#]+/ contained containedin={1}'.
-        format(name('Prefix'), syntax_name))
-    com(r'syntax match {0} /\v[^/ \[\]]+\ze(\s(\[|\()|\n)/ contained containedin={1}'.
-        format(name('File'), syntax_name))
-    com(r'syntax match {0} /\v\[[^]]*\]/ contained containedin={1}'.
-        format(name('Info'), syntax_name))
-    com(r'syntax match {0} /\v\([^)]*\)/ contained containedin={1}'.
-        format(name('Time'), syntax_name))
-    com(r'syntax match {0} /\$[A-Z]\+/ contained containedin={1}'.
-        format(name('Special'), syntax_name))
-
-    com(r'syntax match {0} /\v\].\[/ contained containedin={1}'.
-        format(name('Icon'), syntax_name))
-    com(r'syntax match {0} /[[\]]/ conceal contained containedin={1}'.
-        format(name('Sep'), name('Icon')))
-
-    com('highlight default link {0} Constant'.format(name('Prefix')))
-    com('highlight default link {0} String'.format(name('Icon')))
-    com('highlight default link {0} Function'.format(name('File')))
-    com('highlight default link {0} PreProc'.format(name('Info')))
-    com('highlight default link {0} Statement'.format(name('Time')))
-    com('highlight default link {0} WildMenu'.format(name('Special')))
+    for syn in HIGHLIGHT_SYNTAX:
+        conceal = 'conceal ' if syn.get('is_conceal') else ''
+        containedin = syntax_name + ('_' + syn['in'] if 'in' in syn else '')
+        vim.command(
+            'syntax match {0}_{1} /{2}/ {3}contained containedin={4}'.format(
+                syntax_name, syn['name'], syn['re'], conceal, containedin))
+        if not syn.get('is_conceal'):
+            vim.command(
+                'highlight default link {0}_{1} {2}'.format(
+                    syntax_name, syn['name'], syn['link']))
