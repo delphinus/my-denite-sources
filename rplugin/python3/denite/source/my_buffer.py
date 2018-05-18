@@ -30,7 +30,7 @@ class Source(Base):
         return {
             'bufnr': buffer_attr['number'],
             'word': name,
-            'abbr': ' {0}  {1}{2} {3}{4} {5}'.format(
+            'abbr': ' {0} {1}{2} {3}{4} {5}'.format(
                 icon(self.vim, name),
                 str(buffer_attr['number']).rjust(rjust, ' '),
                 buffer_attr['status'],
