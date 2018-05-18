@@ -15,7 +15,8 @@ def abbr(vim, x):
 
 
 def icon(vim, path):
-    return vim.funcs.WebDevIconsGetFileTypeSymbol(path, os.path.isdir(path))
+    return ']{0}['.format(
+        vim.funcs.WebDevIconsGetFileTypeSymbol(path, os.path.isdir(path)))
 
 
 def icon_abbr(vim, x):
@@ -29,8 +30,6 @@ def highlight(vim, syntax_name):
     com = vim.command
     com(r'syntax match {0} /\v\d+\s[\ ahu%#]+/ contained containedin={1}'.
         format(name('Prefix'), syntax_name))
-    com(r'syntax match {0} /\v\s.\s/ contained containedin={1}'.
-        format(name('Icon'), syntax_name))
     com(r'syntax match {0} /\v[^/ \[\]]+\ze(\s(\[|\()|\n)/ contained containedin={1}'.
         format(name('File'), syntax_name))
     com(r'syntax match {0} /\v\[[^]]*\]/ contained containedin={1}'.
@@ -39,6 +38,11 @@ def highlight(vim, syntax_name):
         format(name('Time'), syntax_name))
     com(r'syntax match {0} /\$[A-Z]\+/ contained containedin={1}'.
         format(name('Special'), syntax_name))
+
+    com(r'syntax match {0} /\v\].\[/ contained containedin={1}'.
+        format(name('Icon'), syntax_name))
+    com(r'syntax match {0} /[[\]]/ conceal contained containedin={1}'.
+        format(name('Sep'), name('Icon')))
 
     com('highlight default link {0} Constant'.format(name('Prefix')))
     com('highlight default link {0} String'.format(name('Icon')))
