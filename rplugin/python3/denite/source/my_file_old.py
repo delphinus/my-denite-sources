@@ -8,7 +8,7 @@ import sys
 from os.path import dirname
 sys.path.append(dirname(dirname(__file__)))
 
-from my_util import icon_abbr, highlight, word
+from my_util import icon_abbr, highlight
 from denite.source.file_old import Source as Base
 
 
@@ -20,7 +20,7 @@ class Source(Base):
 
     def gather_candidates(self, context):
         return [{
-            'word': word(self.vim, x),
+            'word': x,
             'abbr': icon_abbr(self.vim, x),
             'action__path': x,
         } for x in self.vim.call('denite#helper#_get_oldfiles')]

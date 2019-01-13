@@ -13,10 +13,6 @@ HIGHLIGHT_SYNTAX = [
     {'name': 'IconConceal', 'is_conceal': True, 'in': 'Icon', 're': r'[[\]]'},
 ]
 
-def word(vim, x):
-    return vim.funcs.fnamemodify(x, ':~:.')
-
-
 def abbr(vim, x):
     if x != NO_NAME:
         x = vim.funcs.fnamemodify(x, ':p:~')
