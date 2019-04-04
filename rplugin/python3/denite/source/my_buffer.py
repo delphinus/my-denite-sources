@@ -20,7 +20,7 @@ class Source(Base):
         self.name = "my_buffer"
         sys.path.append(dirname(dirname(__file__)))
 
-    def _convert(self, buffer_attr, rjust):
+    def _convert(self, buffer_attr, rjust, ljustnm, rjustft):
         if buffer_attr["name"] == "":
             name = NO_NAME
             path = ""
