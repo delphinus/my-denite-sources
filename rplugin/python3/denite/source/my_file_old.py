@@ -10,7 +10,7 @@ from os.path import dirname
 sys.path.append(dirname(dirname(__file__)))
 
 from my_util import icon_abbr, highlight
-from denite.source.file_old import Source as Base
+from denite.source.file.old import Source as Base
 
 
 class Source(Base):
