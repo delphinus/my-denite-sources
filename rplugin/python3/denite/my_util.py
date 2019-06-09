@@ -1,4 +1,5 @@
-import os.path
+from os import environ
+from pathlib import Path
 
 NO_NAME = "NoName"
 HIGHLIGHT_SYNTAX = [
@@ -12,19 +13,54 @@ HIGHLIGHT_SYNTAX = [
     {"name": "Icon", "link": "String", "re": r"\].\["},
     {"name": "IconConceal", "is_conceal": True, "in": "Icon", "re": r"[[\]]"},
 ]
+PATH_REPLACES = [
+    {
+        # TODO: detect vim?
+        "path": str(Path("~/.cache/dein/.cache/init.vim/.dein")),
+        "text": "$INIT",
+    },
+    {"path": str(Path("~/.cache/dein/repos")), "text": "$DEIN"},
+    {"path": str(Path("~/.go/src")), "text": "$GO"},
+    {"path": str(Path(environ["VIMRUNTIME"])), "text": "$VIMRUNTIME"},
+    {"path": str(Path(environ["VIM"])), "text": "$VIM"},
+]
 
 
 def abbr(vim, x):
-    if x != NO_NAME:
-        x = vim.funcs.fnamemodify(x, ":p:~")
-        x = x.replace("~/.cache/dein/repos", "$DEIN")
-        x = x.replace("~/.go/src", "$GO")
-    return x
+    """
+    abbr() makes shortened paths. It replaces paths by PATH_REPLACES config.
+
+    And also it replaces path parts into the head character until the length is
+    under winwidth.
+
+    path/to/long/long/filenames.txt
+    <---- winwidth ---->
+    p/t/l/long/filenames.txt
+
+    The last two part will be not cut even if it is over the width.
+    """
+    if x == NO_NAME:
+        return x
+
+    x = vim.funcs.fnamemodify(x, ":~:.")
+    for p in PATH_REPLACES:
+        x = x.replace(vim.funcs.fnamemodify(p["path"], ":~:."), p["text"])
+    width = vim.funcs.winwidth(0)
+    if len(x) <= width:
+        return x
+
+    x = Path(x)
+
+    def cut(n=0):
+        y = Path(*[part[0:1] if i <= n else part for i, part in enumerate(x.parts)])
+        return y if len(str(y)) < width or n < len(x.parts) - 3 else cut(n + 1)
+
+    return cut() if len(x.parts) > 2 else x
 
 
 def icon(vim, path):
     return "]{0}[".format(
-        vim.funcs.WebDevIconsGetFileTypeSymbol(path, os.path.isdir(path))
+        vim.funcs.WebDevIconsGetFileTypeSymbol(path, Path(path).is_dir())
     )
 
 
