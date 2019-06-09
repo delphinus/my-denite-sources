@@ -1,4 +1,3 @@
-import os.path
 from os import environ
 from pathlib import Path
 
@@ -61,7 +60,7 @@ def abbr(vim, x):
 
 def icon(vim, path):
     return "]{0}[".format(
-        vim.funcs.WebDevIconsGetFileTypeSymbol(path, os.path.isdir(path))
+        vim.funcs.WebDevIconsGetFileTypeSymbol(path, Path(path).is_dir())
     )
 
 
