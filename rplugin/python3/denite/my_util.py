@@ -9,7 +9,7 @@ HIGHLIGHT_SYNTAX = [
     {"name": "Time", "link": "Statement", "re": r"\v\([^)]*\)"},
     {"name": "File", "link": "Function", "re": r"\v[^/ [\]]+\ze\s(\[|\()"},
     {"name": "File", "link": "Function", "re": r"\v[^/ [\]]+\ze\n"},
-    {"name": "Special", "link": "WildMenu", "re": r"\v\$[A-Z]+"},
+    {"name": "Special", "link": "Special", "re": r"\v\$[A-Z]+"},
     {"name": "Icon", "link": "String", "re": r"\].\["},
     {"name": "IconConceal", "is_conceal": True, "in": "Icon", "re": r"[[\]]"},
 ]
