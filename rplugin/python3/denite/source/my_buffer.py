@@ -9,18 +9,22 @@ from os.path import dirname
 
 sys.path.append(dirname(dirname(__file__)))
 
+from denite.source.buffer import Source as Base
+from denite.util import Nvim
 from my_util import NO_NAME, abbr, icon, highlight
 from time import localtime, strftime
-from denite.source.buffer import Source as Base
+from typing import Any, Dict
 
 
 class Source(Base):
-    def __init__(self, vim):
+    def __init__(self, vim: Nvim):
         super().__init__(vim)
         self.name = "my_buffer"
         sys.path.append(dirname(dirname(__file__)))
 
-    def _convert(self, buffer_attr, rjust, ljustnm, rjustft):
+    def _convert(
+        self, buffer_attr: Dict[str, Any], rjust: int, ljustnm: int, rjustft: int
+    ) -> Dict[str, Any]:
         if buffer_attr["name"] == "":
             name = NO_NAME
             path = ""
@@ -50,5 +54,5 @@ class Source(Base):
             "timestamp": buffer_attr["timestamp"],
         }
 
-    def highlight(self):
+    def highlight(self) -> None:
         highlight(self.vim, self.syntax_name)
