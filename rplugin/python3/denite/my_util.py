@@ -1,8 +1,11 @@
 from os import environ
 from pathlib import Path
+from typing import List, Dict, Union
+
+from denite.util import Nvim
 
 NO_NAME = "NoName"
-HIGHLIGHT_SYNTAX = [
+HIGHLIGHT_SYNTAX: List[Dict[str, Union[str, bool]]] = [
     {"name": "Prefix", "link": "Constant", "re": r"\v\d+\s[\ ahu%#+]+"},
     {"name": "Info", "link": "PreProc", "re": r"\v\[[^]]*\]"},
     {"name": "Modified", "link": "Statement", "re": "+", "in": "Prefix"},
@@ -26,7 +29,7 @@ PATH_REPLACES = [
 ]
 
 
-def abbr(vim, x):
+def abbr(vim: Nvim, x: str) -> str:
     """
     abbr() makes shortened paths. It replaces paths by PATH_REPLACES config.
 
@@ -49,29 +52,28 @@ def abbr(vim, x):
     if len(x) <= width:
         return x
 
-    x = Path(x)
+    xp = Path(x)
 
-    def cut(n=0):
-        y = Path(*[part[0:1] if i <= n else part for i, part in enumerate(x.parts)])
-        return y if len(str(y)) < width or n < len(x.parts) - 3 else cut(n + 1)
+    def cut(n: int = 0) -> str:
+        y = Path(*[part[0:1] if i <= n else part for i, part in enumerate(xp.parts)])
+        return str(y) if len(str(y)) < width or n < len(xp.parts) - 3 else cut(n + 1)
 
-    return cut() if len(x.parts) > 2 else x
-
-
-def icon(vim, path):
-    return "]{0}[".format(
-        vim.funcs.WebDevIconsGetFileTypeSymbol(path, Path(path).is_dir())
-    )
+    return cut() if len(xp.parts) > 2 else x
 
 
-def icon_abbr(vim, x):
-    return " {0}  {1}".format(icon(vim, x), abbr(vim, x))
+def icon(vim: Nvim, path: str) -> str:
+    icon_str = vim.funcs.WebDevIconsGetFileTypeSymbol(path, Path(path).is_dir())
+    return f"]{icon_str}["
 
 
-def highlight(vim, syntax_name):
+def icon_abbr(vim: Nvim, x: str) -> str:
+    return f" {icon(vim,x)}  {abbr(vim,x)}"
+
+
+def highlight(vim: Nvim, syntax_name: str) -> None:
     for syn in HIGHLIGHT_SYNTAX:
         conceal = "conceal " if syn.get("is_conceal") else ""
-        containedin = syntax_name + ("_" + syn["in"] if "in" in syn else "")
+        containedin = syntax_name + ("_" + str(syn["in"]) if "in" in syn else "")
         vim.command(
             "syntax match {0}_{1} /{2}/ {3}contained containedin={4}".format(
                 syntax_name, syn["name"], syn["re"], conceal, containedin
